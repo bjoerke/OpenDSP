@@ -2,6 +2,7 @@
 
 #include <OpenDsp/OpenDsp.hpp>
 #include <OpenDsp/Signal.hpp>
+#include <OpenDsp/Transforms/Fft.hpp>
 
 typedef float SampleType;
 
@@ -10,12 +11,12 @@ using namespace std;
 
 int main (int argc, char *argv[])
 {
-    const uint len = 64;
-    Signal<float> signal(len);
-    for(uint i=0; i<len; i++)
+    const uint len = 4;
+    Signal<float> signal({1,2,3,4});
+    /*for(uint i=0; i<len; i++)
     {
         signal[i] = sin(i);
-    }
+    } */
     cout<<signal<<endl;
     //TODO: real ist achsensymmetrisch, imag ist punktsymmetrisch fuer relles signal
 
@@ -27,7 +28,8 @@ int main (int argc, char *argv[])
     cout<<endl;
 
     cout<<"==== FFT ===="<<endl;
-    signal.fft(spectrum);
+    Fft<float> fft(signal.getLength());
+    fft.apply(signal, spectrum);
     cout<<spectrum<<endl<<endl;
     for(uint i=0; i<spectrum.getLength(); i++)
     {
