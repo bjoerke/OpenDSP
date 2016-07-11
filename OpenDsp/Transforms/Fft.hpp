@@ -3,6 +3,7 @@
 
 #include <OpenDsp/OpenDsp.hpp>
 #include <OpenDsp/Math/Complex.hpp>
+#include <math.h>
 
 //TODO improve performance!
 static uint reverseBits(uint val, uint bits)
@@ -49,8 +50,8 @@ opendsp::Fft<SampleType>::Fft(uint length) :
     {
         SampleType arg = M_PI*i/numTwiddles;
         twiddles[i].real = cos(arg);
-        twiddles[i].imag = sin(arg);
-       // std::cout<<twiddles[i]<<std::endl;
+        twiddles[i].imag = -sin(arg);
+        std::cout<<twiddles[i]<<std::endl;
     }
 
     //calc reversed bits
@@ -58,6 +59,7 @@ opendsp::Fft<SampleType>::Fft(uint length) :
     for(uint i=0; i<length; i++)
     {
         reversedBits[i] = reverseBits(i, steps);
+        //std::cout<<reversedBits[i];
     }
 }
 
@@ -75,10 +77,10 @@ void opendsp::Fft<SampleType>::apply(opendsp::Signal<SampleType>& src, opendsp::
     {
         uint parts = 1<<(steps-step-1);
         uint elements = length / parts;
-        //std::cout<<"step "<<step<<" has "<<parts<<" parts"<<std::endl;
+        std::cout<<"step "<<step<<" has "<<parts<<" parts"<<std::endl;
         for(uint part=0; part<parts; part++)
         {
-            //std::cout<<"\tpart " << part<<std::endl;
+            std::cout<<"\tpart " << part<<std::endl;
             for(uint element=0; element < elements / 2; element++)
             {
                 uint left =  part*elements + element;
@@ -89,8 +91,8 @@ void opendsp::Fft<SampleType>::apply(opendsp::Signal<SampleType>& src, opendsp::
                 dst[right] = dst[left];
                 dst[right] -= rightValue;
                 dst[left]  += rightValue;
-                //std::cout<<"\t\tcombine "<<left<<" and "<<right;
-                //std::cout<<" with twiddle "<<twiddle<<" yields"<<dst[left]<<" "<<dst[right]<<std::endl;
+                std::cout<<"\t\tcombine "<<left<<" and "<<right;
+                std::cout<<" with twiddle "<<twiddle<<" yields"<<dst[left]<<" "<<dst[right]<<std::endl;
             }
         }
     }

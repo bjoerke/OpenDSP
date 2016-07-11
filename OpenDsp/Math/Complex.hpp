@@ -34,28 +34,28 @@ class Complex
             real = value;
             imag = 0;
         }
-        void operator=(Complex<T> complex)
+        void operator=(const Complex<T>& complex)
         {
             real = complex.real;
             imag = complex.imag;
         }
-        void operator+=(const Complex<T> add)
+        void operator+=(const Complex<T>& add)
         {
             real += add.real;
             imag += add.imag;
         }
-        void operator-=(Complex<T> sub)
+        void operator-=(Complex<T>& sub)
         {
             real -= sub.real;
             imag -= sub.imag;
         }
-        void operator*=(Complex<T> mul)
+        void operator*=(Complex<T>& mul)
         {
             T realTemp = real;
             real = real * mul.real - imag * mul.imag;
             imag = realTemp * mul.imag + imag * mul.real;
         }
-        void operator/=(Complex<T> div)
+        void operator/=(Complex<T>& div)
         {
             T realTemp = real;
             T norm = (div.real * div.real + div.imag * div.imag);

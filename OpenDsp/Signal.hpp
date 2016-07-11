@@ -4,7 +4,6 @@
 #include <OpenDsp/OpenDsp.hpp>
 #include <string>
 #include <sstream>
-#include <math.h>
 
 namespace opendsp
 {
