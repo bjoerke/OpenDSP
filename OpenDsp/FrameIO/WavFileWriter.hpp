@@ -66,7 +66,7 @@ void opendsp::WavFileWriter<SampleType>::open()
 {
     file.open(path, std::ios::binary);
     file.seekp(sizeof(RiffSection) + sizeof(FormatSection) + sizeof(DataSection));
-    if(file.bad())
+    if(!file.good())
     {
         throw std::runtime_error("IO error");
     }

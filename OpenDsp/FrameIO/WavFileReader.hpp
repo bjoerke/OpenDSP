@@ -56,7 +56,7 @@ void opendsp::WavFileReader<SampleType>::open()
 {
     file.open(path, std::ios::binary);
 
-    if(file.bad())
+    if(!file.good())
     {
         throw std::runtime_error("Cannot open " + path);
         file.close();
@@ -185,7 +185,7 @@ template<typename SampleType>
 void opendsp::WavFileReader<SampleType>::close()
 {
     file.close();
-    if(file.bad())
+    if(!file.good())
     {
         throw std::runtime_error("IO error");
     }
