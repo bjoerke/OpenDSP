@@ -30,8 +30,9 @@ public:
     Signal<SampleType>& operator=(Signal<SampleType> copy);
     uint getLength() const;
 
-    virtual const std::string toString() const;
+    void operator=(SampleType value);
 
+    const std::string toString() const;
 
     void dft(Signal<Complex<SampleType>>& dst) const;
 
@@ -219,23 +220,16 @@ uint opendsp::Signal<SampleType>::calcConvolutionOverlapLength(const Signal<Samp
     return h.length - 1;
 }
 
+ //TODO Goertzel-Algorithmus
+
 template<typename SampleType>
-void opendsp::Signal<SampleType>::dft(opendsp::Signal<opendsp::Complex<SampleType>>& dst) const
+void opendsp::Signal<SampleType>::operator=(SampleType value)
 {
-    double factor = 2 * M_PIl / length;
-    for (uint k=0 ; k<length ; k++)
+    for(uint i=0; i<length; i++)
     {
-        dst[k].real = 0;
-        dst[k].imag = 0;
-        for (uint n=0 ; n<length ; ++n)
-        {
-            dst[k].real += samples[n] * cos(n * k * factor);
-            dst[k].imag -= samples[n] * sin(n * k * factor);
-        }
+        samples[i] = value; //TODO: memset?
     }
 }
-
- //TODO Goertzel-Algorithmus
 
 template<typename SampleType>
 const std::string opendsp::Signal<SampleType>::toString() const

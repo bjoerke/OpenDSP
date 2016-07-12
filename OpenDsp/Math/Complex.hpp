@@ -29,6 +29,9 @@ class Complex
             imag{c.imag}
         {
         }
+        ~Complex()
+        {
+        }
         void operator=(T value)
         {
             real = value;

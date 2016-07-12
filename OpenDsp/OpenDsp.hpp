@@ -2,6 +2,7 @@
 #define _OPEN_DSP_H_
 
 #include <OpenDsp/Math/Complex.hpp>
+#include <stdbool.h>
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -35,5 +36,10 @@ void _open_dsp_cond_warning(bool condition, const char* message, int line, const
 
 #endif //OPEN_DSP_DEBUG
 
+bool isPowerOfTwo(uint v)
+{
+    //from http://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
+    return (v && !(v & (v - 1)));
+}
 
 #endif
