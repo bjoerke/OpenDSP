@@ -65,6 +65,11 @@ class Complex
             real = (real * div.real + imag * div.imag) / norm;
             imag = (imag * div.real - realTemp * div.imag) / norm;
         }
+        void operator/=(T div)
+        {
+            real /= div;
+            imag /= div;
+        }
         T amplitude()
         {
             return sqrt(real * real + imag * imag);

@@ -5,7 +5,7 @@
 #include <OpenDsp/Signal.hpp>
 #include <OpenDsp/FrameIO/WavFileReader.hpp>
 #include <OpenDsp/FrameIO/WavFileWriter.hpp>
-#include <OpenDsp/Transforms/Fft.hpp>
+#include <OpenDsp/Transforms/RealFft.hpp>
 
 using namespace opendsp;
 using namespace std;
@@ -19,7 +19,7 @@ int main (int argc, char *argv[])
     Signal<double> frameIn(FRAME_LEN);
     Signal<double> frameOut(FRAME_LEN);
     Signal<cdouble> spectrum(FRAME_LEN);
-    Fft<double> fft(FRAME_LEN);
+    RealFft<double> fft(FRAME_LEN);
 
     //WavFileReader<double> reader( "../OpenDSP-data/database_8.wav");
     WavFileReader<double> reader( "../OpenDSP-data/Florence & The Machine - Spectrum (Say My Name) (Calvin Harris Extended Mix).wav");

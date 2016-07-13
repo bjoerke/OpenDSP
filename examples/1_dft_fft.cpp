@@ -3,7 +3,7 @@
 
 #include <OpenDsp/OpenDsp.hpp>
 #include <OpenDsp/Signal.hpp>
-#include <OpenDsp/Transforms/Fft.hpp>
+#include <OpenDsp/Transforms/RealFft.hpp>
 #include <OpenDsp/Transforms/Dft.hpp>
 
 typedef float SampleType;
@@ -14,11 +14,11 @@ using namespace std;
 int main (int argc, char *argv[])
 {
     Signal<float> signal({1,2,3,4,5,6,7,8});
-    Signal<cfloat> spectrum(signal.getLength());
-   //TODO: real ist achsensymmetrisch, imag ist punktsymmetrisch fuer relles signal
+    RealFft<float> fft(signal.getLength());
+    Dft<float> dft;
+    Signal<cfloat> spectrum(fft.calcOutputLength());
 
     cout<<"==== FFT ===="<<endl;
-    Fft<float> fft(signal.getLength());
     spectrum = cfloat(0,0);
     fft.apply(signal, spectrum);
     cout<<spectrum<<endl;
@@ -27,7 +27,6 @@ int main (int argc, char *argv[])
     cout<<signal<<endl;
 
     cout<<"===== DFT ===="<<endl;
-    Dft<float> dft;
     spectrum = cfloat(0,0);
     dft.apply(signal, spectrum);
     cout<<spectrum<<endl;
