@@ -185,10 +185,6 @@ template<typename SampleType>
 void opendsp::WavFileReader<SampleType>::close()
 {
     file.close();
-    if(!file.good())
-    {
-        throw std::runtime_error("IO error");
-    }
 }
 
 template<typename SampleType>

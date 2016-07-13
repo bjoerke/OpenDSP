@@ -13,18 +13,9 @@ using namespace std;
 
 int main (int argc, char *argv[])
 {
-    const uint len = 8;
     Signal<float> signal({1,2,3,4,5,6,7,8});
-    /*
-    for(uint i=0; i<len; i++)
-    {
-        signal[i] = sin(i);
-    }
-    */
-    cout<<signal<<endl;
-    //TODO: real ist achsensymmetrisch, imag ist punktsymmetrisch fuer relles signal
-
     Signal<cfloat> spectrum(signal.getLength());
+   //TODO: real ist achsensymmetrisch, imag ist punktsymmetrisch fuer relles signal
 
     cout<<"==== FFT ===="<<endl;
     Fft<float> fft(signal.getLength());

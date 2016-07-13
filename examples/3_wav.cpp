@@ -5,24 +5,26 @@
 #include <OpenDsp/Signal.hpp>
 #include <OpenDsp/FrameIO/WavFileReader.hpp>
 #include <OpenDsp/FrameIO/WavFileWriter.hpp>
+#include <OpenDsp/Transforms/Fft.hpp>
 
 using namespace opendsp;
 using namespace std;
 
-typedef double SampleType;
+#define FRAME_LEN 2048
 
 int main (int argc, char *argv[])
 {
     //wav test
     clock_t startTime = clock();
-    Signal<SampleType> dirac(14); dirac[13] = 1;
-    Signal<SampleType> frameIn(1024);
-    Signal<SampleType> frameOut(1024);
-    Signal<SampleType> frameOverlap(frameIn.calcConvolutionOverlapLength(dirac));
-   // for(int i=0; i<1024; i++) frameOut[i] = i*30;
+    Signal<double> frameIn(FRAME_LEN);
+    Signal<double> frameOut(FRAME_LEN);
+    Signal<cdouble> spectrum(FRAME_LEN);
+    Fft<double> fft(FRAME_LEN);
 
-    WavFileReader<SampleType> reader( "database_8.wav");
-    WavFileWriter<SampleType> writer( "test.wav");
+    //WavFileReader<double> reader( "../OpenDSP-data/database_8.wav");
+    WavFileReader<double> reader( "../OpenDSP-data/Florence & The Machine - Spectrum (Say My Name) (Calvin Harris Extended Mix).wav");
+    //WavFileReader<double> reader( "../OpenDSP-data/Ian Carey+Snoop Dogg - Last Night.wav");
+    WavFileWriter<double> writer( "../OpenDSP-data/test.wav");
 
     reader.open();
     writer.setSamplesPerSec(reader.getSamplesPerSec());
@@ -35,13 +37,17 @@ int main (int argc, char *argv[])
     while(reader.hasMoreFrames())
     {
         reader.getNextFrame(frameIn);
-        frameIn.convolveWithOverlap(dirac, frameOut, frameOverlap);
+        fft.apply(frameIn, spectrum);
+        for(uint i=FRAME_LEN / 32; i<31*FRAME_LEN / 32 ; i++)
+        {
+            spectrum[i] = cdouble(0,0);
+        }
+        fft.invert(spectrum, frameOut);
         writer.writeFrame(frameOut);
     }
     reader.close();
     writer.close();
 
     printf("Time taken: %.3fs\n", (double)(clock() - startTime)/CLOCKS_PER_SEC);
-    cin.get();
     return 0;
 }

@@ -29,12 +29,15 @@ class Fft : public Transform<Sample_T, Complex<Sample_T> >
         Fft(uint length);
         void apply(Signal<Sample_T>& src, Signal<Complex<Sample_T>>& dst) override;
         void invert(Signal<Complex<Sample_T>>& src, Signal<Sample_T>& dst) override;
+        ~Fft();
 
     private:
         uint length;
         uint steps;
         Complex<Sample_T>* twiddles;
+        Complex<Sample_T>* buffer;
         uint* reversedBits;
+        void transform(Complex<Sample_T>& in, Complex<Sample_T>& out, bool invert);
 
         /**
          * Calcualtes the length of the transformed signal for
@@ -54,6 +57,7 @@ class Fft : public Transform<Sample_T, Complex<Sample_T> >
 template<typename SampleType>
 opendsp::Fft<SampleType>::Fft(uint length) :
     length{length},
+    buffer{new Complex<SampleType>[length]},
     steps{(uint) (log(length) / log(2))}  //TODO: faster way http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
 {
     OPEN_DSP_COND_WARNING( !isPowerOfTwo(length), "length must be a power of 2");
@@ -76,6 +80,13 @@ opendsp::Fft<SampleType>::Fft(uint length) :
         reversedBits[i] = reverseBits(i, steps);
         //std::cout<<reversedBits[i];
     }
+}
+
+template<typename SampleType>
+opendsp::Fft<SampleType>::~Fft()
+{
+    delete[] twiddles;
+    delete[] buffer;
 }
 
 template<typename SampleType>
