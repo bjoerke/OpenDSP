@@ -30,14 +30,13 @@ class Fft : public Transform<Complex<Sample_T>, Complex<Sample_T> >
         ~Fft();
         void apply(Signal<Complex<Sample_T>>& in, Signal<Complex<Sample_T>>& out) override;
         void invert(Signal<Complex<Sample_T>>& in, Signal<Complex<Sample_T>>& out) override;
-
-        void transform(Signal<Complex<Sample_T>>& in, Signal<Complex<Sample_T>>& out, bool invert);
-
-    public: //TODO: make friend to RealFft
-        uint length;
-        uint* reversedBits;
+        uint calcOutputLength() const;
+        uint getLength() const;
 
     private:
+        void transform(Signal<Complex<Sample_T>>& in, Signal<Complex<Sample_T>>& out, bool invert);
+        uint length;
+        uint* reversedBits;
         uint steps;
         Complex<Sample_T>* twiddles;
 
@@ -80,34 +79,12 @@ opendsp::Fft<SampleType>::~Fft()
 template<typename Sample_T>
 void opendsp::Fft<Sample_T>::apply(Signal<Complex<Sample_T>>& in, Signal<Complex<Sample_T>>& out)
 {
-    Complex<Sample_T> temp;
-    for(uint i=0; i<length; i++)
-    {
-        uint rev = reversedBits[i];
-        if(rev > i)
-        {
-            temp = in[i];
-            out[i] = in[rev];
-            out[rev] = temp;
-        }
-    }
     transform(in, out, false);
 }
 
 template<typename Sample_T>
 void opendsp::Fft<Sample_T>::invert(Signal<Complex<Sample_T>>& in, Signal<Complex<Sample_T>>& out)
 {
-    Complex<Sample_T> temp;
-    for(uint i=0; i<length; i++)
-    {
-        uint rev = reversedBits[i];
-        if(rev > i)
-        {
-            temp = in[i];
-            out[i] = in[rev];
-            out[rev] = temp;
-        }
-    }
     transform(in, out, true);
     for(uint i=0; i<length; i++)
     {
@@ -123,6 +100,19 @@ void opendsp::Fft<Sample_T>::invert(Signal<Complex<Sample_T>>& in, Signal<Comple
 template<typename SampleType>
 void opendsp::Fft<SampleType>::transform(opendsp::Signal<opendsp::Complex<SampleType>>& in, opendsp::Signal<opendsp::Complex<SampleType>>& out, bool invert)
 {
+    //store elements in bit reversed order
+    Complex<SampleType> temp; //is needed if in==out
+    for(uint i=0; i<length; i++)
+    {
+        uint rev=reversedBits[i];
+        if(rev >= i)
+        {
+            temp = in[i];
+            out[i] = in[rev];
+            out[rev] = temp;
+        }
+    }
+
     //traverse butterfly graph
     for(uint step=0; step<steps; step++)
     {
@@ -131,27 +121,40 @@ void opendsp::Fft<SampleType>::transform(opendsp::Signal<opendsp::Complex<Sample
         // std::cout<<"step "<<step<<" has "<<parts<<" parts"<<std::endl;
         for(uint part=0; part<parts; part++)
         {
-            // std::cout<<"\tpart " << part<<std::endl;
+          //   std::cout<<"\tpart " << part<<std::endl;
             for(uint element=0; element < elements / 2; element++)
             {
                 uint left =  part*elements + element;
                 uint right = left + elements / 2;
                 uint twiddleIndex = element * parts;
-                Complex<SampleType> rightValue = in[right];
                 Complex<SampleType> twiddle = twiddles[twiddleIndex];
                 if(invert)
                 {
                     twiddle.conjugate();
                 }
+                Complex<SampleType> rightValue = out[right];
                 rightValue *= twiddle;
-                out[right] = in[left];
+                out[right] = out[left];
                 out[right] -= rightValue;
                 out[left]  += rightValue;
                 // std::cout<<"\t\tcombine "<<left<<" and "<<right;
-                // std::cout<<" with twiddle "<<twiddle<<" yields"<<dst[left]<<" "<<dst[right]<<std::endl;
+                 //std::cout<<" with twiddle "<<twiddle<<" yields"<<out[left]<<" "<<out[right]<<std::endl;
             }
         }
     }
 }
+
+template<typename Sample_T>
+inline uint opendsp::Fft<Sample_T>::getLength() const
+{
+    return length;
+}
+
+template<typename Sample_T>
+inline uint opendsp::Fft<Sample_T>::calcOutputLength() const
+{
+    return length;
+}
+
 
 #endif

@@ -10,7 +10,7 @@
 using namespace opendsp;
 using namespace std;
 
-#define FRAME_LEN 2048
+#define FRAME_LEN 1048576
 
 int main (int argc, char *argv[])
 {

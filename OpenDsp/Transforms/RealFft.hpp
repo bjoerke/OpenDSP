@@ -50,13 +50,13 @@ template<typename SampleType>
 void opendsp::RealFft<SampleType>::apply(opendsp::Signal<SampleType>& src, opendsp::Signal<opendsp::Complex<SampleType>>& dst)
 {
     //store samples at bit-reversed index in dst
-    for(uint i=0; i<fft.length; i++)
+    for(uint i=0; i<fft.getLength(); i++)
     {
-        (*buffer)[i] = src[fft.reversedBits[i]];
+        (*buffer)[i] = src[i];
     }
-    fft.transform(*buffer, *buffer, false);
+    fft.apply(*buffer, *buffer);
     //for a real valued input the spectrum is hermetic
-    for(uint i=0; i<fft.length/2+1; i++)
+    for(uint i=0; i<fft.getLength()/2+1; i++)
     {
         dst[i] = (*buffer)[i];
     }
@@ -66,31 +66,27 @@ void opendsp::RealFft<SampleType>::apply(opendsp::Signal<SampleType>& src, opend
 template<typename SampleType>
 void opendsp::RealFft<SampleType>::invert(Signal<Complex<SampleType>>& src, Signal<SampleType>& dst)
 {
-    //store samples at bit-reversed index in dst
-    for(uint i=0; i<fft.length; i++)
+    //make signal symmetric
+    for(uint i=0; i<fft.getLength()/2+1; i++)
     {
-        uint rev = fft.reversedBits[i];
-        if(rev > fft.length/2)
-        {
-            (*buffer)[i] = src[fft.length-rev];
-            (*buffer)[i].conjugate();
-        }
-        else
-        {
-            (*buffer)[i] = src[rev];
-        }
+       (*buffer)[i] = src[i];
     }
-    fft.transform(*buffer, *buffer, true);
-    for(uint i=0; i<fft.length; i++)
+    for(uint i=fft.getLength()/2+1; i<fft.getLength(); i++)
     {
-        dst[i] = (*buffer)[i].real / fft.length;
+        (*buffer)[i] = src[fft.getLength() - i];
+        (*buffer)[i].conjugate();
+    }
+    fft.invert(*buffer, *buffer);
+    for(uint i=0; i<fft.getLength(); i++)
+    {
+        dst[i] = (*buffer)[i].real;
     }
 }
 
 template<typename Sample_T>
 uint opendsp::RealFft<Sample_T>::calcOutputLength()
 {
-    return fft.length/2+1;
+    return fft.getLength()/2+1;
 }
 
 #endif

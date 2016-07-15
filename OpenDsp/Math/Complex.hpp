@@ -58,6 +58,11 @@ class Complex
             real = real * mul.real - imag * mul.imag;
             imag = realTemp * mul.imag + imag * mul.real;
         }
+        void operator*=(T mul)
+        {
+            real *= mul;
+            imag *= mul;
+        }
         void operator/=(Complex<T>& div)
         {
             T realTemp = real;
