@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <type_traits>
+#include <iostream>
 
 namespace opendsp
 {

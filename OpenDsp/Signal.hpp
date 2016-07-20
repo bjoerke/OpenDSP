@@ -31,6 +31,7 @@ public:
     uint getLength() const;
 
     void operator=(SampleType value);
+    void operator*=(const Signal<SampleType>& mul);
 
     const std::string toString() const;
 
@@ -57,10 +58,7 @@ opendsp::Signal<SampleType>::Signal(uint length) :
     samples{new SampleType[length]},
     length{length}
 {
-    for(uint i=0; i<length; i++)
-    {
-        samples[i] = 0; //TODO memset
-    }
+    ;
 }
 
 /**
@@ -228,6 +226,16 @@ void opendsp::Signal<SampleType>::operator=(SampleType value)
     for(uint i=0; i<length; i++)
     {
         samples[i] = value; //TODO: memset?
+    }
+}
+
+template<typename SampleType>
+void opendsp::Signal<SampleType>::operator*=(const opendsp::Signal<SampleType>& mul)
+{
+    OPEN_DSP_COND_WARNING(length != mul.length, "signals must have equal lengths!");
+    for(uint i=0; i<length; i++)
+    {
+        samples[i] *= mul[i];
     }
 }
 

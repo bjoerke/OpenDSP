@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include <OpenDsp/SignalGenerators/SignalGenerator.hpp>
+#include <OpenDsp/Generators/SignalGenerator.hpp>
 
 namespace opendsp
 {

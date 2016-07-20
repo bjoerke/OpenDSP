@@ -2,7 +2,7 @@
 
 #include <OpenDsp/OpenDsp.hpp>
 #include <OpenDsp/Signal.hpp>
-#include <OpenDsp/SignalGenerators/SineGenerator.hpp>
+#include <OpenDsp/Generators/SineGenerator.hpp>
 #include <OpenDsp/FrameIO/WavFileWriter.hpp>
 
 typedef float SampleType;
