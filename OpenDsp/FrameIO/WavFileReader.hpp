@@ -137,7 +137,7 @@ void opendsp::WavFileReader<SampleType>::getNextFrame(opendsp::Signal<SampleType
     {
         return;
     }
-    int i=0;
+    uint i=0;
     for(i=0; i<dst.getLength(); i++)
     {
         //TODO read multiple samples

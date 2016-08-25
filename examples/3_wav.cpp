@@ -11,8 +11,8 @@
 using namespace opendsp;
 using namespace std;
 
-//#define FRAME_LEN 16384
-#define FRAME_LEN 1024
+#define FRAME_LEN 16384
+//#define FRAME_LEN 1024
 
 int main (int argc, char *argv[])
 {
@@ -43,7 +43,7 @@ int main (int argc, char *argv[])
         reader.getNextFrame(frameIn);
         frameIn *= window;
         fft.apply(frameIn, spectrum);
-        for(uint i=spectrum.getLength() / 64; i<spectrum.getLength() ; i++)
+        for(uint i=spectrum.getLength() / 32; i<spectrum.getLength() ; i++)
         {
             spectrum[i] = cdouble(0,0);
         }

@@ -94,7 +94,7 @@ void opendsp::WavFileWriter<SampleType>::close()
 template<typename SampleType>
 void opendsp::WavFileWriter<SampleType>::writeFrame(Signal<SampleType>& frame)
 {
-    for(int i=0; i<frame.getLength(); i++)
+    for(uint i=0; i<frame.getLength(); i++)
     {
         SampleType sample = frame[i];
         switch(bitsPerSample)
